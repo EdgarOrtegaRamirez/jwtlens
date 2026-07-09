@@ -1,0 +1,12 @@
+.DS_Store
+target/
+*.swp
+*.swo
+*.pyc
+__pycache__/
+.env
+*.pem
+*.key
+*.crt
+token.jwt
+jwt.txt
