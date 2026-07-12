@@ -125,7 +125,13 @@ fn main() -> Result<()> {
             algorithm,
         } => {
             let token = resolve_token(token.clone())?;
-            let result = validate::validate_jwt(&token, issuer.as_deref(), audience.as_deref(), secret.as_deref(), algorithm)?;
+            let result = validate::validate_jwt(
+                &token,
+                issuer.as_deref(),
+                audience.as_deref(),
+                secret.as_deref(),
+                algorithm,
+            )?;
             output::print_validation(&result, is_json);
         }
         Commands::Inspect { token } => {
@@ -150,7 +156,7 @@ fn main() -> Result<()> {
         } => {
             let token = validate::generate_token(payload, secret, algorithm)?;
             if is_json {
-                println!("{}", serde_json::json!({ "token": token }).to_string());
+                println!("{}", serde_json::json!({ "token": token }));
             } else {
                 println!("{}", token);
             }

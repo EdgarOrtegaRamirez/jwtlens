@@ -9,6 +9,7 @@ use serde_json::Value;
 /// Result of JWT validation
 #[derive(Debug, Clone)]
 pub struct ValidationResult {
+    #[allow(dead_code)]
     pub token: String,
     pub is_valid: bool,
     pub checks: Vec<ValidationCheck>,
@@ -94,7 +95,7 @@ pub fn validate_jwt(
             },
         });
         if sig_ok.is_err() {
-            errors.push(format!("Signature verification failed"));
+            errors.push("Signature verification failed".to_string());
         }
     } else {
         checks.push(ValidationCheck {
@@ -318,9 +319,7 @@ fn verify_signature(token: &str, secret: &str, algorithm_str: &str) -> Result<()
                 Algorithm::RS256 | Algorithm::RS384 | Algorithm::RS512 => {
                     DecodingKey::from_rsa_pem(secret.as_bytes())?
                 }
-                Algorithm::ES256 | Algorithm::ES384 => {
-                    DecodingKey::from_ec_pem(secret.as_bytes())?
-                }
+                Algorithm::ES256 | Algorithm::ES384 => DecodingKey::from_ec_pem(secret.as_bytes())?,
                 Algorithm::EdDSA => DecodingKey::from_ed_pem(secret.as_bytes())?,
                 _ => DecodingKey::from_secret(secret.as_bytes()),
             }

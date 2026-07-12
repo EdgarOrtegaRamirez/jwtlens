@@ -8,6 +8,7 @@ use serde_json::Value;
 /// Security inspection report for a JWT
 #[derive(Debug, Clone)]
 pub struct InspectionReport {
+    #[allow(dead_code)]
     pub token: String,
     pub header_analysis: Vec<Insight>,
     pub payload_analysis: Vec<Insight>,
@@ -81,10 +82,7 @@ fn analyze_header(
     let header = &decoded.header;
 
     // Algorithm analysis
-    let alg = header
-        .get("alg")
-        .and_then(|v| v.as_str())
-        .unwrap_or("none");
+    let alg = header.get("alg").and_then(|v| v.as_str()).unwrap_or("none");
     let (alg_severity, alg_note) = match alg {
         "none" => {
             issues.push("Algorithm is 'none' — token has no cryptographic signature".to_string());

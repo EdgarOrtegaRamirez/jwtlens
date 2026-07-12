@@ -7,6 +7,7 @@ use serde_json::Value;
 /// Represents a decoded JWT with its three parts
 #[derive(Debug, Clone)]
 pub struct DecodedJwt {
+    #[allow(dead_code)]
     pub raw_token: String,
     pub header: Value,
     pub payload: Value,
@@ -52,7 +53,7 @@ fn decode_base64_json(encoded: &str) -> Result<Value> {
         .decode(encoded)
         .with_context(|| format!("Invalid base64url encoding: '{}'", encoded))?;
     let json_str =
-        String::from_utf8(bytes).with_context(|| format!("Invalid UTF-8 in decoded base64"))?;
+        String::from_utf8(bytes).with_context(|| "Invalid UTF-8 in decoded base64".to_string())?;
     let value: Value =
         serde_json::from_str(&json_str).with_context(|| format!("Invalid JSON: '{}'", json_str))?;
     Ok(value)

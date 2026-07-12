@@ -111,8 +111,7 @@ fn test_json_output() {
     let (stdout, _, success) = run(&["-f", "json", "decode", &token]);
     assert!(success);
     // JSON output should be parseable
-    let parsed: serde_json::Value =
-        serde_json::from_str(&stdout).expect("Should be valid JSON");
+    let parsed: serde_json::Value = serde_json::from_str(&stdout).expect("Should be valid JSON");
     assert!(parsed.get("header").is_some());
     assert!(parsed.get("payload").is_some());
 }
@@ -172,12 +171,7 @@ fn test_validate_with_issuer() {
     );
 
     // Validate with correct issuer — should match
-    let (val_out2, _, _) = run(&[
-        "validate",
-        &token,
-        "--issuer",
-        "https://auth.example.com",
-    ]);
+    let (val_out2, _, _) = run(&["validate", &token, "--issuer", "https://auth.example.com"]);
     assert!(
         val_out2.contains("Expected 'https://auth.example.com', got 'https://auth.example.com'"),
         "Should match issuer: {}",
@@ -185,12 +179,7 @@ fn test_validate_with_issuer() {
     );
 
     // Validate with wrong issuer — should mismatch
-    let (val_out3, _, _) = run(&[
-        "validate",
-        &token,
-        "--issuer",
-        "https://wrong.example.com",
-    ]);
+    let (val_out3, _, _) = run(&["validate", &token, "--issuer", "https://wrong.example.com"]);
     assert!(
         val_out3.contains("Issuer mismatch"),
         "Should show mismatch: {}",

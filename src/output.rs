@@ -1,7 +1,7 @@
 // JWTLens - Output Formatting Module
 
 use crate::decode::{get_claim_description, DecodedJwt};
-use crate::inspect::{InspectionReport, Insight, Severity};
+use crate::inspect::{Insight, InspectionReport, Severity};
 use crate::validate::ValidationResult;
 use colored::*;
 use serde_json::{json, Value};
@@ -58,7 +58,10 @@ pub fn print_header(decoded: &DecodedJwt, is_json: bool) {
 /// Print just the payload
 pub fn print_payload(decoded: &DecodedJwt, is_json: bool) {
     if is_json {
-        println!("{}", serde_json::to_string_pretty(&decoded.payload).unwrap());
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&decoded.payload).unwrap()
+        );
     } else {
         println!("{}", "JWT Payload:".green().bold());
         print_json_value(&decoded.payload, 0);
@@ -117,15 +120,12 @@ pub fn print_validation(result: &ValidationResult, is_json: bool) {
 /// Print inspection report
 pub fn print_inspection(report: &InspectionReport, is_json: bool) {
     if is_json {
-        let header_insights: Vec<Value> = report
-            .header_analysis
-            .iter()
-            .map(|i| insight_to_json(i))
-            .collect();
+        let header_insights: Vec<Value> =
+            report.header_analysis.iter().map(insight_to_json).collect();
         let payload_insights: Vec<Value> = report
             .payload_analysis
             .iter()
-            .map(|i| insight_to_json(i))
+            .map(insight_to_json)
             .collect();
 
         let output = json!({
@@ -215,7 +215,13 @@ fn print_json_value(value: &Value, indent: usize) {
                 let prefix = "  ".repeat(indent + 1);
                 let desc = get_claim_description(key);
                 if !desc.is_empty() {
-                    println!("{}{}: \t{}  ({})", prefix, key.cyan(), format_value(val), desc.dimmed());
+                    println!(
+                        "{}{}: \t{}  ({})",
+                        prefix,
+                        key.cyan(),
+                        format_value(val),
+                        desc.dimmed()
+                    );
                 } else {
                     println!("{}{}: \t{}", prefix, key.cyan(), format_value(val));
                 }
@@ -234,7 +240,7 @@ fn format_value(value: &Value) -> String {
         Value::Number(n) => format!("{}", n),
         Value::Bool(b) => format!("{}", b),
         Value::Array(arr) => {
-            let items: Vec<String> = arr.iter().map(|v| format_value(v)).collect();
+            let items: Vec<String> = arr.iter().map(format_value).collect();
             format!("[{}]", items.join(", "))
         }
         Value::Null => "null".to_string(),
